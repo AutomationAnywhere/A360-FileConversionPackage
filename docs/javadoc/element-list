@@ -1,0 +1,5 @@
+com.automationanywhere.commandsdk.annotations
+com.automationanywhere.commandsdk.annotations.desktopoperations
+com.automationanywhere.commandsdk.annotations.rules
+com.automationanywhere.commandsdk.annotations.rules.EntryList
+com.automationanywhere.commandsdk.model

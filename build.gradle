@@ -1,0 +1,146 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		jcenter()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+		flatDir {
+			dirs 'libs'
+		}
+		dependencies {
+			classpath name: 'shadow', version: '2+'
+			classpath name:'command-plugin', version: '1+'
+			classpath "net.ltgt.gradle:gradle-apt-plugin:0.20"
+		}
+	}
+}
+
+plugins {
+	id 'java'
+}
+
+configure(allprojects){
+	
+	apply plugin: 'com.github.johnrengelman.shadow'
+	apply plugin: "com.automationanywhere.command-codegen"
+
+	
+	ext {
+		groupName = 'com.automationanywhere'
+		testNgVersion = '6.14.3'
+		loggerVersion = '2.10.0'
+		jnaVersion = '5.3.1'	
+		version '2.0.8'
+	}
+	group "$groupName"
+
+	sourceCompatibility = JavaVersion.VERSION_11
+
+	compileJava.options.encoding = 'UTF-8'
+	compileTestJava.options.encoding = 'UTF-8'
+	
+	repositories {
+		mavenCentral()
+		jcenter()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+		flatDir {
+			dirs 'libs'
+		}
+	}
+	
+	configurations {
+		apt
+	}
+	
+	compileJava {
+		options.annotationProcessorPath = configurations.apt
+		
+		dependsOn processResources
+
+	}
+	
+	packageJson{
+		artifactName = project.name
+		group = "$groupName"
+		author = ""
+	}
+	
+	jar.dependsOn commandCodeGen
+	
+	shadowJar {
+		baseName = project.name
+		classifier = null
+		mergeServiceFiles('META-INF/spring.*')
+		mergeServiceFiles('META-INF/services/java.sql.Driver')
+		zip64 = true
+		exclude 'META-INF/MANIFEST.MF'
+		exclude 'META-INF/*.SF'
+		exclude 'META-INF/*.DSA'
+		exclude 'META-INF/*.RSA'
+		rename '^OABWrapper.*\\.zip$', 'OABWrapper.zip'
+	}
+
+	
+	dependencies {
+		compileOnly name: 'command-annotations', version: '1+'
+		compileOnly name: 'bot-runtime', version: '1+'
+		compileOnly name: 'bot-api', version: '1+'
+		compileOnly name: 'common-security', version: '1+'
+		implementation name: 'i18n-api', version: '1+'
+		apt name: 'command-processor', version: '1+'
+		compileOnly group: 'org.apache.logging.log4j', name: 'log4j-core', version: "$loggerVersion"
+		testImplementation "org.testng:testng:$testNgVersion"
+		testImplementation name: 'bot-runtime', version: '1+'
+		testImplementation name: 'bot-api', version: '1+'
+		implementation group: 'net.java.dev.jna', name: 'jna-platform', version: "$jnaVersion"
+
+		//Custom Dependencies
+		// https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox-tools
+		implementation group: 'org.apache.pdfbox', name: 'pdfbox-tools', version: '2.0.23'
+		// https://mvnrepository.com/artifact/net.sf.cssbox/pdf2dom
+		implementation group: 'net.sf.cssbox', name: 'pdf2dom', version: '2.0.0'
+		// https://mvnrepository.com/artifact/com.itextpdf/itextpdf
+		implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.2'
+		// https://mvnrepository.com/artifact/com.itextpdf.tool/xmlworker
+		implementation group: 'com.itextpdf.tool', name: 'xmlworker', version: '5.5.13.2'
+		// https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
+		implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
+		// https://mvnrepository.com/artifact/org.apache.poi/poi-scratchpad
+		implementation group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.0.0'
+
+		//documents4j
+		// https://mvnrepository.com/artifact/com.documents4j/documents4j-local
+		implementation group: 'com.documents4j', name: 'documents4j-local', version: '1.1.6'
+		// https://mvnrepository.com/artifact/com.documents4j/documents4j-util-conversion
+		implementation group: 'com.documents4j', name: 'documents4j-util-conversion', version: '1.1.6'
+		// https://mvnrepository.com/artifact/com.documents4j/documents4j-transformer-msoffice-base
+		implementation group: 'com.documents4j', name: 'documents4j-transformer-msoffice-base', version: '1.1.6'
+		// https://mvnrepository.com/artifact/com.documents4j/documents4j-transformer-msoffice-word
+		implementation group: 'com.documents4j', name: 'documents4j-transformer-msoffice-word', version: '1.1.6'
+		// https://mvnrepository.com/artifact/com.documents4j/documents4j-util-ws
+		implementation group: 'com.documents4j', name: 'documents4j-util-ws', version: '1.1.6'
+		// https://mvnrepository.com/artifact/com.documents4j/documents4j-util-all
+		implementation group: 'com.documents4j', name: 'documents4j-util-all', version: '1.1.6'
+		// https://mvnrepository.com/artifact/com.documents4j/documents4j-transformer-msoffice-powerpoint
+		implementation group: 'com.documents4j', name: 'documents4j-transformer-msoffice-powerpoint', version: '1.1.6'
+		// https://mvnrepository.com/artifact/com.documents4j/documents4j-transformer-msoffice-excel
+		implementation group: 'com.documents4j', name: 'documents4j-transformer-msoffice-excel', version: '1.1.6'
+		// https://mvnrepository.com/artifact/com.documents4j/documents4j-util-all
+		implementation group: 'com.documents4j', name: 'documents4j-util-all', version: '1.1.6'
+		// https://mvnrepository.com/artifact/com.lowagie/itext
+		implementation group: 'com.lowagie', name: 'itext', version: '4.2.2', ext: 'pom'
+		// https://mvnrepository.com/artifact/org.imgscalr/imgscalr-lib
+		implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
+
+
+
+
+
+
+
+	}
+	
+}
