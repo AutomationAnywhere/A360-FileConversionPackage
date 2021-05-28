@@ -99,5 +99,6 @@
 	"ImagetoImage.outputLocation.label": "Output file path (Optional)",
 	"ImagetoImage.outputLocation.description": "If empty, file will be saved to same location as input file",
 	"ImagetoImage.colorFormat.label": "Target Color Format",
-	"ImagetoImage.colorFormat.description": "This is the format of the output file, color is not added if not present in original"
+	"ImagetoImage.colorFormat.description": "This is the format of the output file, color is not added if not present in original",
+	"ImagetoImage.return_description":"The path to the image (or first page of a multipage tiff) is returned on success"
 }
