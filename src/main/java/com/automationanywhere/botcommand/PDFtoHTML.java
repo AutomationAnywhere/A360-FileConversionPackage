@@ -60,7 +60,7 @@ public class PDFtoHTML {
                     @Idx.Option(index = "3.2", pkg = @Pkg(label = "Method 2 - HTML + Images", value = "image"))
             })
             @NotEmpty
-            @Pkg(label = "[[PDFtoImage.colorFormat.label]]", description = "[[PDFtoImage.colorFormat.description]]")
+            @Pkg(label = "[[PDFtoHTML.Format.label]]", description = "[[PDFtoHTML.Format.description]]")
                     String conversionMethod) {
 
         //Internal validation, to disallow empty strings. No null check needed as we have NotEmpty on firstString.

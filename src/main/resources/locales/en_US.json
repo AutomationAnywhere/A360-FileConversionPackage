@@ -8,6 +8,8 @@
 	"PDFtoHTML.inputFile.label": "Select a PDF for conversion",
 	"PDFtoHTML.outputLocation.label": "Output file path (Optional)",
 	"PDFtoHTML.outputLocation.description": "If empty, file will be saved to same location as input file",
+	"PDFtoHTML.Format.label": "HTML Conversion Format",
+	"PDFtoHTML.Format.description":"The selected format determines the number of files/exact output of the conversion",
 	"PDFtoImage.label": "PDF to Image",
 	"PDFtoImage.description": "Converts PDF file to Image file",
 	"PDFtoImage.node_label": "{{inputFile}} to {{outputType}}",
