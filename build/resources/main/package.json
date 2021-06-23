@@ -4,8 +4,8 @@
     "description": "[[description]]",
     "group": "com.automationanywhere",
     "artifactName": "FileConversion",
-    "packageVersion": "2.0.8-20210623-114655",
-    "codeVersion": "2.0.8-20210623-114655",
+    "packageVersion": "2.0.8-20210623-100441",
+    "codeVersion": "2.0.8-20210623-100441",
     "author": "",
     "commands": [
         {
