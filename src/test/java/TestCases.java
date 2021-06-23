@@ -4,6 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 public class TestCases {
     @Test
@@ -84,8 +85,8 @@ public class TestCases {
 
         PPTXtoImage pptXtoImage = new PPTXtoImage();
 
-        Value<String> outputFile = pptXtoImage.action(inputFile,"jpg",outputPath);
-        Assert.assertEquals(outputFile.toString(), "src/main/resources/test_files/Output/PPTXtoImage/");
+        Value<List<Value>> outputFile = pptXtoImage.action(inputFile,"jpg",outputPath);
+        Assert.assertEquals(outputFile.get(0).toString(), "src/main/resources/test_files/Output/PPTXtoImage/SamplePowerpoint_page00001.jpg");
     }
     @Test
     public void testImagetoImage() {
@@ -105,7 +106,7 @@ public class TestCases {
         PDFtoImage pdFtoImage = new PDFtoImage();
         ImagetoImage imagetoImage = new ImagetoImage();
 
-        Value<String> outputFile = pdFtoImage.action(inputFile,"jpg","color", outputPath);
-        Assert.assertEquals(outputFile.toString(), "src/main/resources/test_files/Output/PDFtoImage/SamplePDF-00001.jpg");
+        Value<List<Value>> outputFile = pdFtoImage.action(inputFile,"jpg","color", outputPath);
+        Assert.assertEquals(outputFile.get(0).toString(), "src/main/resources/test_files/Output/PDFtoImage/SamplePDF-00001.jpg");
     }
 }

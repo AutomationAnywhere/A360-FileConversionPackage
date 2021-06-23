@@ -1,12 +1,14 @@
 package com.automationanywhere.botcommand;
 
 import com.automationanywhere.botcommand.data.Value;
+import com.automationanywhere.botcommand.data.impl.ListValue;
 import com.automationanywhere.botcommand.data.impl.StringValue;
 import com.automationanywhere.botcommand.exception.BotCommandException;
 import com.automationanywhere.commandsdk.annotations.*;
 import com.automationanywhere.commandsdk.annotations.BotCommand;
 import com.automationanywhere.commandsdk.annotations.rules.FileExtension;
 import com.automationanywhere.commandsdk.annotations.rules.NotEmpty;
+import com.automationanywhere.commandsdk.model.DataType;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -24,6 +26,8 @@ import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.automationanywhere.commandsdk.model.AttributeType.*;
 import static com.automationanywhere.commandsdk.model.DataType.STRING;
@@ -38,11 +42,11 @@ import static com.automationanywhere.commandsdk.model.DataType.STRING;
         node_label = "[[PPTXtoImage.node_label]]", description = "[[PPTXtoImage.description]]", icon = "pkg.svg",
 
         //Return type information. return_type ensures only the right kind of variable is provided on the UI.
-        return_label = "[[PPTXtoImage.return_label]]", return_type = STRING, return_required = true, return_description = "[[PPTXtoImage.return_description]]")
+        return_label = "[[PPTXtoImage.return_label]]", return_type = DataType.LIST, return_required = true, return_description = "[[PPTXtoImage.return_description]]")
 public class PPTXtoImage {
     //Identify the entry point for the action. Returns a Value<String> because the return type is String.
     @Execute
-    public Value<String> action(
+    public Value<List<Value>> action(
             //Idx 1 would be displayed first, with a text box for entering the value.
             @Idx(index = "1", type = FILE)
             //UI labels.
@@ -77,7 +81,9 @@ public class PPTXtoImage {
         if(!inputFile.toUpperCase().endsWith(".PPTX")){
             throw new BotCommandException("Please select a supported file to continue");
         }
-
+        ListValue<?> result = new ListValue();
+        List<Value> resultList = new ArrayList();
+        String currentImgFilePath = "";
         //Business logic
         try{
             //Get file name to add to custom path
@@ -138,8 +144,10 @@ public class PPTXtoImage {
                 graphics.scale(scale,scale);
 
                 slide.draw(graphics);
-                FileOutputStream out = new FileOutputStream(String.format(outputPath + fileNameWithoutExt + "_page%05d.%s", i,outputType));
+                currentImgFilePath = String.format(outputPath + fileNameWithoutExt + "_page%05d.%s", i,outputType);
+                FileOutputStream out = new FileOutputStream(currentImgFilePath);
                 javax.imageio.ImageIO.write(img, outputType, out);
+                resultList.add(new StringValue(currentImgFilePath));
                 out.close();
                 i++;
             }
@@ -148,7 +156,8 @@ public class PPTXtoImage {
         } catch (Exception e) {
             throw new BotCommandException("Error occurred during file conversion. Error code: " + e.toString());
         }
-        //Return StringValue.
-        return new StringValue(outputPath);
+        //Return ListValue.
+        result.set(resultList);
+        return result;
     }
 }

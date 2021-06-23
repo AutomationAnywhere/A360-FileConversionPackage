@@ -1,12 +1,14 @@
 package com.automationanywhere.botcommand;
 
 import com.automationanywhere.botcommand.data.Value;
+import com.automationanywhere.botcommand.data.impl.ListValue;
 import com.automationanywhere.botcommand.data.impl.StringValue;
 import com.automationanywhere.botcommand.exception.BotCommandException;
 import com.automationanywhere.commandsdk.annotations.*;
 import com.automationanywhere.commandsdk.annotations.BotCommand;
 import com.automationanywhere.commandsdk.annotations.rules.FileExtension;
 import com.automationanywhere.commandsdk.annotations.rules.NotEmpty;
+import com.automationanywhere.commandsdk.model.DataType;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -20,6 +22,8 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.automationanywhere.commandsdk.model.AttributeType.*;
 import static com.automationanywhere.commandsdk.model.DataType.STRING;
@@ -34,11 +38,11 @@ import static com.automationanywhere.commandsdk.model.DataType.STRING;
         node_label = "[[PDFtoImage.node_label]]", description = "[[PDFtoImage.description]]", icon = "pkg.svg",
 
         //Return type information. return_type ensures only the right kind of variable is provided on the UI.
-        return_label = "[[PDFtoImage.return_label]]", return_type = STRING, return_required = true)
+        return_label = "[[PDFtoImage.return_label]]", return_type = DataType.LIST, return_required = true)
 public class PDFtoImage {
     //Identify the entry point for the action. Returns a Value<String> because the return type is String.
     @Execute
-    public Value<String> action(
+    public Value<List<Value>> action(
             //Idx 1 would be displayed first, with a text box for entering the value.
             @Idx(index = "1", type = FILE)
             //UI labels.
@@ -85,7 +89,9 @@ public class PDFtoImage {
         }
 
         //Create return value
-        String firstPath = "";
+        ListValue<?> result = new ListValue();
+        List<Value> resultList = new ArrayList();
+        String currentImgFilePath = "";
 
         //Business logic
         try{
@@ -115,10 +121,10 @@ public class PDFtoImage {
             PDDocument pdf = PDDocument.load(new File(inputFile));
             PDFRenderer pdfRenderer = new PDFRenderer(pdf);
             for (int page=0; page < pdf.getNumberOfPages(); ++page){
-                if(page==0){
-                    //Save file path of file to string for return to UI
-                    firstPath = String.format(outputPath + fileNameWithoutExt + "-%05d.%s", page+1,outputType);
-                }
+
+                //Save file path of file to string for return to UI
+                currentImgFilePath = String.format(outputPath + fileNameWithoutExt + "-%05d.%s", page+1,outputType);
+
                 BufferedImage bim;
                 if(colorFormat.equals("color")){
                     bim = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
@@ -128,14 +134,16 @@ public class PDFtoImage {
                     bim = pdfRenderer.renderImageWithDPI(page, 300, ImageType.BINARY);
                 }
 
-                ImageIOUtil.writeImage(bim, String.format(outputPath + fileNameWithoutExt + "-%05d.%s", page+1,outputType), 300);
+                ImageIOUtil.writeImage(bim, currentImgFilePath, 300);
+                resultList.add(new StringValue(currentImgFilePath));
             }
             pdf.close();
         } catch (Exception e) {
             throw new BotCommandException("Error occurred during file conversion. Error code: " + e.toString());
         }
 
-        //Return StringValue.
-        return new StringValue(firstPath);
+        //Return ListValue.
+        result.set(resultList);
+        return result;
     }
 }

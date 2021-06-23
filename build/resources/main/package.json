@@ -4,8 +4,8 @@
     "description": "[[description]]",
     "group": "com.automationanywhere",
     "artifactName": "FileConversion",
-    "packageVersion": "2.0.8-20210528-162020",
-    "codeVersion": "2.0.8-20210528-162020",
+    "packageVersion": "2.0.8-20210623-114655",
+    "codeVersion": "2.0.8-20210623-114655",
     "author": "",
     "commands": [
         {
@@ -304,8 +304,8 @@
                 },
                 {
                     "name": "conversionMethod",
-                    "label": "[[PDFtoImage.colorFormat.label]]",
-                    "description": "[[PDFtoImage.colorFormat.description]]",
+                    "label": "[[PDFtoHTML.Format.label]]",
+                    "description": "[[PDFtoHTML.Format.description]]",
                     "type": "SELECT",
                     "rules": [
                         {
@@ -332,7 +332,7 @@
             "nodeLabel": "[[PDFtoImage.node_label]]",
             "mainClass": "com.automationanywhere.botcommand.PDFtoImageCommand",
             "icon": "pkg.svg",
-            "returnType": "STRING",
+            "returnType": "LIST",
             "returnSubtype": "UNDEFINED",
             "returnLabel": "[[PDFtoImage.return_label]]",
             "returnRequired": true,
@@ -458,7 +458,7 @@
             "nodeLabel": "[[PPTXtoImage.node_label]]",
             "mainClass": "com.automationanywhere.botcommand.PPTXtoImageCommand",
             "icon": "pkg.svg",
-            "returnType": "STRING",
+            "returnType": "LIST",
             "returnSubtype": "UNDEFINED",
             "returnLabel": "[[PPTXtoImage.return_label]]",
             "returnRequired": true,
